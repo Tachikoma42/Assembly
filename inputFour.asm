@@ -24,15 +24,15 @@ NOFOUR: MOV     DX, OFFSET      MESS0
         CMP     CL,04H              ;检测是否输入4位字符
         JNE     NOFOUR     
 
-        MOV     SI, OFFSET  BUFF+2                              ;指向字符串首地址
-AGAIN:  MOV     AL, [SI]
-        INC     SI
+;        MOV     SI, OFFSET  BUFF+2                              ;指向字符串首地址
+;AGAIN:  MOV     AL, [SI]
+;        INC     SI
                                     ;判断是否为数字
-        CMP     AL, '0'
-        JB      NOFOUR
-        CMP     AL, '9'
-        JA      NOFOUR      
-        LOOP    AGAIN
+;        CMP     AL, '0'
+;        JB      NOFOUR
+;        CMP     AL, '9'
+;        JA      NOFOUR      
+;        LOOP    AGAIN
                                     ;判断完毕，为4位数字
         CALL    DISPNUM
         CALL    NEWLINE
