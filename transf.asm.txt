@@ -1,0 +1,92 @@
+.model  tiny
+        ;8255 control
+        com55_add   equ     0f003h
+        pa55_add    equ     0f000h
+        pb55_add    equ     0f001h
+        pc55_add    equ     0f002h
+        ;8253 control
+        com53_add   equ     0e003h
+        out53_add   equ     0e000h
+
+.stack 100
+.data	
+	ranfood     dw      ?
+        inkey       db      ?
+        snake       db      2,1,4,2,4,3,4
+        snakelen    db      3 
+       rowmat      db      0b, 01111111b, 10111111b, 11011111b, 11101111b, 11110111b, 11111011b, 11111101b,11111101b
+        colmat      db      0b, 10000000b, 01000000b, 00100000b, 00010000b, 00001000b, 00000100b, 00000010b, 00000001b
+  
+.code
+start:  mov     ax, @data
+        mov     ds, ax
+        nop
+		
+		mov     al, 90h
+        mov     dx, com55_add
+        out     dx, al
+        mov	ranfood, 0504h
+        mov	bx, ranfood
+
+ reca :call	display1
+ jmp reca
+		
+
+		
+		 quit:   mov     ax, 4c00h
+        int     21h
+display1     proc
+        mov     bx, ranfood
+        call dispone
+           xor ax,ax
+        mov     al, snakelen
+     	dec	al
+        mov     cx, ax
+    	inc	al
+        add     al, al
+        mov     si, ax
+  redisp:      mov     bh, snake[si]
+        dec     si
+        mov     bl, snake[si]
+        dec     si
+        call dispone
+        loop    redisp
+        mov	dx,pb55_add
+        mov	al, 0ffh
+        out	dx, al
+        mov	dx, pc55_add
+        mov	al, 0
+        out     dx, al
+        ret
+display1     endp
+dispone     proc
+        push bx
+        push dx
+        push cx
+        push ax
+        push si
+        ;the point is at bh-high,bl-low
+        
+        xor     ax, ax
+        mov     al, bh
+        mov     si, ax
+        mov     al, rowmat[si]
+        mov     dx, pb55_add
+        out     dx, al
+
+        xor     ax, ax
+        mov     al, bl
+        mov     si, ax
+        mov     al, colmat[si]
+        mov     dx, pc55_add
+        out     dx, al
+        ;
+        pop     si
+        pop     ax
+        pop     cx
+        pop     dx
+        pop     bx
+        ret
+dispone     endp
+		  end     start
+
